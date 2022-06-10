@@ -1,0 +1,1322 @@
+<template>
+  <div>
+    <Header ref="HeaderRef" type="Organization"></Header>
+
+    <div class="container-fluid">
+    <div class="row">
+      <div class="bg-white border-bottom-content-first col-4 d-flex flex-column py-5">
+        <Steps ref="StepsRef" type="Organization"></Steps>
+
+        <div class="text-center flex-grow-0 flex-shrink-0">
+          <small class="text-muted">2021 © ООО «Тендерные Технологии»</small>
+        </div>
+      </div>
+
+      <div class="border-bottom-content-second d-flex flex-column col-8 bg-white p-3">
+        <div class="bg-light rounded h-100">
+          <VeeForm
+            v-slot="{ handleSubmit }"
+            :validation-schema="schema"
+            as="div"
+            class="flex-grow-1 flex-shrink-0 row mx-0"
+          >
+            <form
+              @submit="handleSubmit($event, onSubmit)"
+              class="align-self-center  justify-content-center mx-auto py-3 my-4"
+              :class="{
+                'col-9': step < 6 || (step === 6 && ecp_stage == 1),
+                'col-11': step === 6 && ecp_stage == 0
+              }"
+            >
+              <div class="d-flex mb-4">
+                <h1 class="h2">{{ title }}</h1>
+                <p class="text-muted mx-3 h4 font-weight-normal align-self-start mt-2">
+                  Шаг {{ this.step }}
+                </p>
+              </div>
+
+              <transition name="fade" mode="out-in">
+
+              <div v-if="step == 1" key="1">
+                <div class="row">
+                  <div class="form-floating col-6">
+                    <Field
+                      v-model="inn"
+                      id="input_inn"
+                      type="text"
+                      class="form-control"
+                      name="inn"
+                      placeholder="ИНН (физического лица)"
+                    />
+                    <label for="input_inn">ИНН (физического лица)</label>
+                  </div>
+                  <div class="col-12">
+                    <div class="small text-danger input-error"><ErrorMessage name="inn" /></div>
+                  </div>
+                </div>
+
+                <div class="mb-4 mt-3">
+                  <label class="fw-bold form-label" for="profile">Профиль должника</label>
+                  <select
+                    v-model="debtorType"
+                    name="debtorType"
+                    class="form-select form-control col-7"
+                  >
+                    <!-- :class="{ danger: errors.has('email') }" -->
+                    <!-- <Select :options="types" v-model="type" name="type" ></Select> -->
+                    <option :value="{ number: 1 }">Физическое лицо</option>
+                    <option :value="{ number: 2 }">Индивидуальный предприниматель</option>
+                    <option :value="{ number: 3 }" selected>Юридическое лицо</option>
+                  </select>
+                  <div class="small text-danger input-error"><ErrorMessage name="type" /></div>
+                </div>
+
+                <div v-if="debtorType.number == 1" key="d1">
+                  <label class="fw-bold form-label">Данные физического лица</label>
+                  <div class="row">
+                    <div class="form-floating col-4">
+                      <Field
+                        v-model="surname"
+                        id="input_surname"
+                        type="text"
+                        class="form-control"
+                        name="surname"
+                        placeholder="Фамилия"
+                      />
+                      <label for="input_surname">Фамилия</label>
+                    </div>
+
+                    <div class="form-floating col-4">
+                      <Field
+                        v-model="name"
+                        id="input_name"
+                        type="text"
+                        class="form-control"
+                        name="name"
+                        placeholder="Имя"
+                      />
+                      <label for="input_name">Имя</label>
+                    </div>
+
+                    <div class="form-floating col-4">
+                      <Field
+                        v-model="patronymic"
+                        id="input_patronymic"
+                        type="text"
+                        class="form-control"
+                        name="patronymic"
+                        placeholder="Отчество"
+                      />
+                      <label for="input_patronymic">Отчество</label>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="small text-danger input-error">
+                        <ErrorMessage name="surname" />
+                      </div>
+                      <div class="small text-danger input-error"><ErrorMessage name="name" /></div>
+                      <div class="small text-danger input-error">
+                        <ErrorMessage name="patronymic" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="debtorType.number == 2" key="d2">
+                  <label class="fw-bold form-label">Данные индивидуального предпринимателя</label>
+                  <div class="row">
+                    <div class="form-floating col-4">
+                      <Field
+                        v-model="surname"
+                        id="input_surname"
+                        type="text"
+                        class="form-control"
+                        name="surname"
+                        placeholder="Фамилия"
+                      />
+                      <label for="input_surname">Фамилия</label>
+                    </div>
+
+                    <div class="form-floating col-4">
+                      <Field
+                        v-model="name"
+                        id="input_name"
+                        type="text"
+                        class="form-control"
+                        name="name"
+                        placeholder="Имя"
+                      />
+                      <label for="input_name">Имя</label>
+                    </div>
+
+                    <div class="form-floating col-4">
+                      <Field
+                        v-model="patronymic"
+                        id="input_patronymic"
+                        type="text"
+                        class="form-control"
+                        name="patronymic"
+                        placeholder="Отчество"
+                      />
+                      <label for="input_patronymic">Отчество</label>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="small text-danger input-error">
+                        <ErrorMessage name="surname" />
+                      </div>
+                      <div class="small text-danger input-error"><ErrorMessage name="name" /></div>
+                      <div class="small text-danger input-error">
+                        <ErrorMessage name="patronymic" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="debtorType.number == 3" key="d3">
+                  <label class="fw-bold form-label">Данные юридического лица</label>
+
+                  <div class="form-floating col-12">
+                    <Field
+                      v-model="urlico"
+                      id="input_urlico"
+                      type="text"
+                      class="form-control"
+                      placeholder="Наименование юр.лица, например ООО «Ромашка»"
+                      name="urlico"
+                    />
+                    <label for="input_urlico">Наименование юр.лица, например ООО «Ромашка»</label>
+                  </div>
+
+                  <div class="small text-danger input-error"><ErrorMessage name="urlico" /></div>
+                </div>
+
+                <div class="form-floating mt-3">
+                  <Field
+                    v-model="adres_debtor"
+                    id="input_adres_debtor"
+                    type="text"
+                    class="form-control"
+                    name="adres_debtor"
+                    placeholder="Полный адрес должника с индексом"
+                  />
+                  <label for="input_adres_debtor">Полный адрес должника с индексом</label>
+                </div>
+
+                <div class="small text-danger input-error">
+                  <ErrorMessage name="adres_debtor" />
+                </div>
+              </div>
+
+              <div v-if="step == 2" key="2">
+                <div class="form-floating mt-3">
+                  <textarea
+                    v-model="information"
+                    id="input_information"
+                    class="form-control"
+                    name="information"
+                    placeholder="Повестка дня + прочая информация"
+                  >
+                  </textarea>
+                  <label for="input_information">Повестка дня + прочая информация</label>
+                </div>
+
+                <div class="small text-danger input-error"><ErrorMessage name="information" /></div>
+
+                <div class="form-floating mt-3">
+                  <Field
+                    v-model="caseNumber"
+                    id="input_caseNumber"
+                    type="text"
+                    class="form-control"
+                    name="caseNumber"
+                    placeholder="Номер дела (о банкротстве)"
+                  />
+                  <label for="input_caseNumber">Номер дела (о банкротстве)</label>
+                </div>
+
+                <div class="small text-danger input-error"><ErrorMessage name="caseNumber" /></div>
+
+
+
+              <div class="row">
+
+                <div class="form-floating col-12 mt-3">
+                  <Field
+                    v-model="numberOfVotes"
+                    id="input_numberOfVotes"
+                    type="text"
+                    class="form-control"
+                    name="numberOfVotes"
+                    placeholder="Общее число голосов собрания (без учета требований, обеспеченных залогом) (руб.) (50% для кворума)"
+                  />
+                  <label for="input_numberOfVotes"
+                    >Общее число голосов собрания (без учета требований, обеспеченных залогом)
+                    (руб.) (50% для кворума)</label
+                  >
+                  <!-- <p class="text-muted small">(50% для кворума)</p> -->
+                </div>
+
+                <div class="col-12">
+
+                <div class="small text-danger input-error">
+                  <ErrorMessage name="numberOfVotes" />
+                </div>
+
+                </div>
+
+              </div>
+
+                <div class="form-floating mt-3">
+                  <Field
+                    v-model="amountOfClaims"
+                    id="input_amountOfClaims"
+                    type="text"
+                    class="form-control"
+                    name="amountOfClaims"
+                    placeholder="Общая сумма залоговых требований"
+                  />
+                  <label for="input_amountOfClaims">Общая сумма залоговых требований</label>
+                </div>
+
+                <div class="small text-danger input-error">
+                  <ErrorMessage name="amountOfClaims" />
+                </div>
+
+                <div class="form-floating mt-3">
+                  <Field
+                    v-model="creditorsClaims"
+                    id="input_creditorsClaims"
+                    type="text"
+                    class="form-control"
+                    name="creditorsClaims"
+                    placeholder="Реестр требований кредиторов"
+                    readonly="true"
+                  />
+                  <label for="input_creditorsClaims">Реестр требований кредиторов</label>
+                </div>
+
+                <div class="small text-danger input-error">
+                  <ErrorMessage name="creditorsClaims" />
+                </div>
+
+                <div class="mt-3">
+                  <input type="checkbox" class="custom-checkbox" id="matches" name="matches" />
+                  <label class="mb-3" for="matches"
+                    >Повторное собрание&nbsp;
+                    <span class="text-muted small ml-2">(30% для кворума)</span>
+                  </label>
+                </div>
+              </div>
+
+
+              <div v-if="step == 3" key="3">
+                <!-- <div class="small alert alert-info d-inline-block">
+                  Внимание, сервис работает по московскому времени
+                </div> -->
+
+                <div class="d-flex align-items-center">
+                  <i class="custom-icon group px-3"></i>
+                  <div>
+                    <h2 class="h6 mx-3"> Титул сообщения (при наличии) </h2>
+                    <p class="mx-3"> Внимание, сервис работает по московскому времени тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст
+                      тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст тут текст</p>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div class="form-floating col-6">
+                    <Field
+                      v-model="date1"
+                      id="input_date1"
+                      type="date"
+                      class="form-control"
+                      name="date1"
+                      placeholder="Дата начала регистрации"
+                    />
+                    <label for="input_date1">Дата начала регистрации</label>
+                  </div>
+
+                  <div class="form-floating col-6">
+                    <Field
+                      v-model="time1"
+                      id="input_time1"
+                      type="text"
+                      class="form-control"
+                      name="time1"
+                      placeholder="Дата начала регистрации"
+                    />
+                    <label for="input_time1">Время начала регистрации</label>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="small text-danger input-error"><ErrorMessage name="date1" /></div>
+                    <div class="small text-danger input-error"><ErrorMessage name="time1" /></div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-floating mt-3 col-6">
+                    <Field
+                      v-model="date2"
+                      id="input_date2"
+                      type="date"
+                      class="form-control"
+                      name="date2"
+                      placeholder="Дата начала собрания"
+                    />
+                    <label for="input_date2">Дата начала собрания</label>
+                  </div>
+
+                  <div class="form-floating mt-3 col-6">
+                    <Field
+                      v-model="time2"
+                      id="input_time2"
+                      type="text"
+                      class="form-control"
+                      name="time2"
+                      placeholder="Примерное время начала собрания"
+                    />
+                    <label for="input_time2">Примерное время начала собрания</label>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="small text-danger input-error"><ErrorMessage name="date2" /></div>
+                    <div class="small text-danger input-error"><ErrorMessage name="time2" /></div>
+                  </div>
+                </div>
+
+                <div class="alert alert-info small mt-3">
+                  Внимание, учитывайте что во время собрания участники могут предложить
+                  дополнительные вопросы на которые потребуется дополнительное время для голосования
+                </div>
+
+                <div class="row">
+                  <div class="form-floating col-6">
+                    <Field
+                      v-model="date3"
+                      id="input_date3"
+                      type="date"
+                      class="form-control"
+                      name="date3"
+                      placeholder="Дата окончания собрания"
+                    />
+                    <label for="input_date3">Дата окончания собрания</label>
+                  </div>
+
+                  <div class="form-floating col-6">
+                    <Field
+                      v-model="time3"
+                      id="input_time3"
+                      type="text"
+                      class="form-control"
+                      name="time3"
+                      placeholder="Примерное время завершения голосования"
+                    />
+                    <label for="input_time3">Примерное время завершения голосования</label>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="small text-danger input-error"><ErrorMessage name="date3" /></div>
+                    <div class="small text-danger input-error"><ErrorMessage name="time3" /></div>
+                  </div>
+                </div>
+
+                <div class="form-floating col-12 mt-3">
+                  <Field
+                    v-model="urlMeeting"
+                    id="input_urlMeeting"
+                    type="text"
+                    class="form-control"
+                    name="urlMeeting"
+                    placeholder="Полный адрес места проведения собрания"
+                    value="https://meets.tender.one/meetings/531"
+                    readonly="true"
+                  />
+                  <label for="input_urlMeeting">Место проведения собрания</label>
+                </div>
+
+                <div class="small text-danger input-error"><ErrorMessage name="urlMeeting" /></div>
+              </div>
+
+            </transition>
+
+
+              <template v-if="step === 4">
+                <div class="mb-3">
+                  <p class="small text-muted">
+                    По каждому вопросу будет сгенерирована бюллетень для участников
+                  </p>
+                </div>
+
+                <div class="mb-2 mt-2">
+                  <a href="#" class="add_question_2 text-info" style="text-decoration: none;"
+                    >+ Добавить вопросы по избранию комитета кредиторов</a
+                  >
+                </div>
+
+                <div class="mb-4 mt-2">
+                  <a href="#" class="add_question" style="text-decoration: none;"
+                    >+ Добавить вопрос</a
+                  >
+                </div>
+
+                <div class="card mb-4 p-4 text-center">
+                  <div class="row mb-3">
+                    <label class="fw-bold form-label"
+                      >Вопрос №1 &nbsp;
+                      <a href="#" class="text-danger fw-bold" style="text-decoration: none;"
+                        ><small>удалить</small></a
+                      >
+                    </label>
+
+                    <div class="form-floating col-12">
+                      <Field
+                        v-model="question"
+                        id="input_question"
+                        type="text"
+                        class="form-control"
+                        name="question"
+                        placeholder="Введите вопрос"
+                      />
+                      <label for="input_question">Введите вопрос</label>
+                    </div>
+
+                    <div class="small text-danger input-error">
+                      <ErrorMessage name="question" />
+                    </div>
+                  </div>
+
+                  <label class="fw-bold form-label text-center">Расчет решений по вопросу</label>
+                  <div class="row">
+                    <div class="form-group col-6">
+                      <select
+                        v-model="debtorType"
+                        name="debtorType"
+                        class="form-select form-control"
+                      >
+                        <option :value="{ number: 1 }"
+                          >От общего числа голосов, включенных в реестр</option
+                        >
+                        <option :value="{ number: 2 }" selected
+                          >От числа голосов присутствующих на собрании</option
+                        >
+                      </select>
+                      <div class="small text-danger input-error"><ErrorMessage name="type" /></div>
+                    </div>
+
+                    <div class="form-group col-6">
+                      <select
+                        v-model="debtorType"
+                        name="debtorType"
+                        class="form-select form-control"
+                      >
+                        <option :value="{ number: 1 }"
+                          >По сумме голосов, без учета требований, обеспеченных залогом</option
+                        >
+                        <option :value="{ number: 2 }" selected
+                          >По сумме голосов, с учетом требований, обеспеченных залогом</option
+                        >
+                      </select>
+                      <div class="small text-danger input-error"><ErrorMessage name="type" /></div>
+                    </div>
+
+                    <div class="form-group col-12 text-center my-3">
+                      <div id="v-model-radiobutton">
+                        <div class="mb-3">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="one"
+                            value="One"
+                            v-model="picked"
+                            checked
+                          />
+                          <label class="" for="one"
+                            >Варианты голосов: За / Против / Воздержался</label
+                          >
+                        </div>
+                        <div>
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="two"
+                            value="Two"
+                            v-model="picked"
+                          />
+                          <label for="two">Свои варианты голосов</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <a
+                        href="#"
+                        class="text-danger text-right fw-bold"
+                        style="text-decoration: none;"
+                        ><small>удалить</small></a
+                      >
+
+                      <div class="form-floating col-12">
+                        <Field
+                          v-model="voice"
+                          id="input_voice"
+                          type="text"
+                          class="form-control"
+                          name="voice"
+                          value="Воздержались"
+                          placeholder="Вариант голоса"
+                        />
+                        <label for="input_voice">Вариант голоса</label>
+                      </div>
+
+                      <div class="small text-danger input-error"><ErrorMessage name="voice" /></div>
+                    </div>
+                  </div>
+
+                  <div class="mb-2 mt-2">
+                    <a href="#" class="add_question_2 text-info" style="text-decoration: none;"
+                      >+ Добавить вариант</a
+                    >
+                  </div>
+
+                  <div class="mb-4 mt-2">
+                    <a href="#" class="add_question" style="text-decoration: none;"
+                      >+ Добавить свой вариант</a
+                    >
+                  </div>
+
+                  <div class="row">
+                    <a href="#" class="text-danger fw-bold" style="text-decoration: none;"
+                      ><small>удалить</small></a
+                    >
+
+                    <div class="form-floating col-12">
+                      <Field
+                        v-model="voting_results"
+                        id="input_voting_results"
+                        type="text"
+                        class="form-control"
+                        name="voting_results"
+                        placeholder="Вариант голоса"
+                      />
+                      <label for="input_voting_results">Вариант голоса</label>
+                    </div>
+
+                    <div class="small text-danger input-error">
+                      <ErrorMessage name="voting_results" />
+                    </div>
+                  </div>
+
+                  <div class="row mt-3">
+                    <a href="#" class="text-danger fw-bold" style="text-decoration: none;"
+                      ><small>удалить</small></a
+                    >
+
+                    <div class="form-floating col-12">
+                      <Field
+                        v-model="voting_results"
+                        id="input_voting_results"
+                        type="text"
+                        class="form-control"
+                        name="voting_results"
+                        value="Свой вариант голоса"
+                        placeholder="Свой вариант голоса"
+                        readonly="true"
+                      />
+                      <label for="input_voting_results">Свой вариант голоса</label>
+                    </div>
+
+                    <div class="small text-danger input-error">
+                      <ErrorMessage name="voting_results" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card px-4 pb-5 pt-2 text-center">
+                  <a
+                    href="#"
+                    class="mb-2 text-danger text-right fw-bold"
+                    style="text-decoration: none;"
+                    ><small>удалить вопросы</small></a
+                  >
+                  <div class="card p-4 row">
+                    <label class="fw-bold form-label">Вопрос №2</label>
+
+                    <div class="form-floating col-12 mb-3">
+                      <Field
+                        v-model="question_2"
+                        id="input_question_2"
+                        type="text"
+                        class="form-control"
+                        name="question_2"
+                        value="Избрание комитета кредиторов"
+                        placeholder="Избрание комитета кредиторов"
+                        readonly="true"
+                      />
+                      <label for="input_question_2">Избрание комитета кредиторов</label>
+                    </div>
+
+                    <div class="small text-danger input-error">
+                      <ErrorMessage name="question_2" />
+                    </div>
+
+                    <div class="form-group col-12 mb-3">
+                      <label class="fw-bold form-label text-center"
+                        >Расчет решений по вопросу</label
+                      >
+                      <select
+                        v-model="debtorType"
+                        name="debtorType"
+                        class="form-select form-control"
+                      >
+                        <option :value="{ number: 1 }"
+                          >По сумме голосов, без учета требований, обеспеченных залогом</option
+                        >
+                        <option :value="{ number: 2 }" selected
+                          >По сумме голосов, с учетом требований, обеспеченных залогом</option
+                        >
+                      </select>
+                      <div class="small text-danger input-error">
+                        <ErrorMessage name="debtorType" />
+                      </div>
+                    </div>
+
+                    <div class="form-group col-12">
+                      <div id="v-model-radiobutton">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          id="one"
+                          value="One"
+                          v-model="picked"
+                          checked
+                        />
+                        <label for="one"
+                          >Голосование по избранию комитета: За / Против / Воздержался</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card p-4 mt-3">
+                    <div class="row">
+                      <label class="fw-bold form-label">Вопрос №3</label>
+
+                      <div class="form-floating col-12">
+                        <Field
+                        v-model="question_3"
+                        id="input_question_3"
+                        type="text"
+                        class="form-control"
+                        name="question_3"
+                        placeholder="Определение количественного состава комитета кредиторов"
+                        readonly="true"
+                        />
+                        <label for="input_question_3">Определение количественного состава комитета кредиторов</label>
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="question_3" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12 mb-3">
+                        <label class="fw-bold form-label text-center"
+                          >Расчет решений по вопросу</label
+                        >
+                        <select
+                          v-model="debtorType"
+                          name="debtorType"
+                          class="form-select form-control"
+                        >
+                          <option :value="{ number: 1 }"
+                            >По сумме голосов, без учета требований, обеспеченных залогом</option
+                          >
+                          <option :value="{ number: 2 }" selected
+                            >По сумме голосов, с учетом требований, обеспеченных залогом</option
+                          >
+                        </select>
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="debtorType" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12 mb-3">
+                        <div id="v-model-radiobutton">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="one"
+                            value="One"
+                            v-model="picked"
+                            checked
+                          />
+                          <label for="one">Голосование по кол-ву состава комитета</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_3"
+                          id="input_version_3"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_3"
+                          value="3"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_3" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_4"
+                          id="input_version_4"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_4"
+                          value="4"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_4" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_5"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_5"
+                          value="5"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_5" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_6"
+                          type="text"
+                          class="form-control text-center"
+                          name="input_version_6"
+                          value="6"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_6" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_7"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_7"
+                          value="7"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_7" />
+                        </div>
+                      </div>
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_8"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_8"
+                          value="8"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_8" />
+                        </div>
+                      </div>
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_9"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_9"
+                          value="9"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_9" />
+                        </div>
+                      </div>
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="version_10"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_10"
+                          value="10"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_10" />
+                        </div>
+                      </div>
+                      <div class="form-group col-3">
+                        <label class="form-label">Вариант голоса</label>
+                        <Field
+                          v-model="input_version_11"
+                          type="text"
+                          class="form-control text-center"
+                          name="version_11"
+                          value="11"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="version_11" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card p-4 mt-3">
+                    <div class="row">
+                      <div class="form-group col-12">
+                        <label class="fw-bold form-label">Вопрос №4</label>
+                        <Field
+                          v-model="question_4"
+                          type="text"
+                          class="form-control"
+                          name="question_4"
+                          value="Избрание членов комитета кредиторов"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="question_4" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12">
+                        <label class="fw-bold form-label text-center"
+                          >Расчет решений по вопросу</label
+                        >
+                        <select
+                          v-model="debtorType"
+                          name="debtorType"
+                          class="form-select form-control"
+                        >
+                          <option :value="{ number: 1 }"
+                            >По сумме голосов, без учета требований, обеспеченных залогом</option
+                          >
+                          <option :value="{ number: 2 }" selected
+                            >По сумме голосов, с учетом требований, обеспеченных залогом</option
+                          >
+                        </select>
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="debtorType" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-12">
+                        <div id="v-model-radiobutton">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="one"
+                            value="One"
+                            v-model="picked"
+                            checked
+                          />
+                          <div for="one">
+                            Голосование по составу комитета (кредиторы, кол-во голосов)
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card p-4 mt-3">
+                    <div class="row">
+                      <div class="form-group col-12">
+                        <label class="fw-bold form-label">Вопрос №5</label>
+                        <Field
+                          v-model="question_5"
+                          type="text"
+                          class="form-control"
+                          name="question_5"
+                          value="Определение полномочий комитета кредиторов"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="question_5" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12">
+                        <label class="fw-bold form-label text-center"
+                          >Расчет решений по вопросу</label
+                        >
+                        <select
+                          v-model="debtorType"
+                          name="debtorType"
+                          class="form-select form-control"
+                        >
+                          <option :value="{ number: 1 }"
+                            >По сумме голосов, без учета требований, обеспеченных залогом</option
+                          >
+                          <option :value="{ number: 2 }" selected
+                            >По сумме голосов, с учетом требований, обеспеченных залогом</option
+                          >
+                        </select>
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="debtorType" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12">
+                        <div id="v-model-radiobutton">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            id="one"
+                            value="One"
+                            v-model="picked"
+                            checked
+                          />
+                          <label for="one">Голосование по полномочиям кредиторов комитета</label>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12">
+                        <label class="form-label">Вариант голоса </label>
+                        <Field
+                          v-model="voice_isb"
+                          type="text"
+                          class="form-control"
+                          name="voice_isb"
+                          value="Воздержались"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="voice_isb" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12">
+                        <label class="form-label">Вариант голоса </label>
+                        <Field
+                          v-model="voting_results_isb"
+                          type="text"
+                          class="form-control"
+                          name="voting_results_isb"
+                          value="Отнести к компетенции комитета кредиторов вопросов, решения по которым принимаются собранием кредиторов, за исключением вопросов, которые отнесены к исключительной компетенции собрания кредиторов"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="voting_results_isb" />
+                        </div>
+                      </div>
+
+                      <div class="form-group col-12">
+                        <label class="form-label">Свой вариант голоса</label>
+                        <Field
+                          v-model="voting_results_2"
+                          type="text"
+                          class="form-control"
+                          name="voting_results_2"
+                          value="Свой вариант голоса"
+                          readonly="true"
+                        />
+                        <div class="small text-danger input-error">
+                          <ErrorMessage name="voting_results_2" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+
+              <template v-if="step === 5">
+                <div class="mb-4 mt-2">
+                  <a href="#" class="add_other_doc" style="text-decoration: none;"
+                    >+ Добавить прочий документ</a
+                  >
+                </div>
+              </template>
+
+              <template v-if="step === 6"> </template>
+
+              <template v-if="step < 6">
+                <button
+                  type="submit"
+                  :disabled="loading"
+                  class="btn btn-primary mt-3 w-100 fw-bold"
+                  :class="{ 'glow-button': loading }"
+                >
+                  Продолжить <i class="bi bi-arrow-right"></i>
+                </button>
+              </template>
+
+              <template v-if="step == 6">
+                <button
+                  @click="alert('sign')"
+                  :disabled="loading"
+                  class="btn btn-primary mt-3 col-9 fw-bold"
+                  :class="{ 'glow-button': loading }"
+                >
+                    Подписать документы <i class="bi bi-arrow-right"></i>
+                </button>
+              </template>
+
+              <template v-if="step == 1">
+                <p class="card-text mt-3 text-muted small pb-5">
+                  Нажимая на кнопку Вы заявляете об ознакомлении и согласии с правилами,
+                  содержащимися в
+                  <a href="#" class="text-muted">Регламенте сервиса</a>, а также подтверждаете свое
+                  согласие на обработку персональных данных
+                </p>
+              </template>
+
+              <div
+                v-if="message"
+                class="alert mt-3"
+                :class="successful ? 'alert-success' : 'alert-danger'"
+              >
+                {{ message }}
+              </div>
+            </form>
+          </VeeForm>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</template>
+
+<script>
+import { Form as VeeForm, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import { setLocale } from "yup";
+import Header from "../components/Header.vue";
+import Steps from "../components/Steps.vue";
+
+const schemas = [
+  yup.object({
+    inn: yup
+      .string()
+      .required()
+      .min(12)
+      .label("ИНН"),
+    surname: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Фамилия"),
+    name: yup
+        .string()
+        .required()
+        .min(2)
+        .label("Имя"),
+    patronymic: yup
+        .string()
+        .required()
+        .min(2)
+        .label("Отчество"),
+    adres_debtor: yup
+        .string()
+        .required()
+        .min(2)
+        .label("Адрес должника")
+  }),
+  // yup.object({
+  //   urlico: yup
+  //     .string()
+  //     .required()
+  //     .min(2)
+  //     .label("Наименование юр.лица")
+  // }),
+// yup.object({
+//   information: yup
+//     .string()
+//     .required()
+//     .min(2)
+//     .label("Повестка дня")
+// }),
+  yup.object({
+    caseNumber: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Номер дела"),
+    numberOfVotes: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Общее число голосов собрания"),
+    amountOfClaims: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Общая сумма залоговых требований"),
+    creditorsClaims: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Реестр требований кредиторов")
+  }),
+
+  // yup.object({
+  //   date1: yup
+  //     .date()
+  //     .required()
+  //     .label("Дата начала регистрации")
+  // }),
+  yup.object({
+    time1: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Время начала регистрации"),
+    time2: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Примерное время начала собрания"),
+    time3: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Время завершения голосования"),
+    urlMeeting: yup
+      .string()
+      .required()
+      .min(2)
+      .label("Место проведения собрания")
+  }),
+  // yup.object({
+  //   date2: yup
+  //     .date()
+  //     .required()
+  //     .label("Дата начала собрания")
+  // }),
+  // yup.object({
+  //   date3: yup
+  //     .date()
+  //     .required()
+  //     .label("Дата окончания собрания")
+  // }),
+];
+
+let formData = {};
+
+export default {
+  name: "Organization",
+  components: {
+    Header,
+    VeeForm,
+    Field,
+    ErrorMessage,
+    Steps
+  },
+  data() {
+    return {
+      title: "Организация собрания",
+      step: 1,
+      loading: false,
+      ecp_stage: 0,
+      schema: schemas[0],
+      debtorType: { number: 1 },
+      message: "",
+
+      inn: "5235235235765",
+      surname: "Петров",
+      name: "Максим",
+      patronymic: "Сергеевич",
+      urlico: "ООО «Ромашка»",
+      adres_debtor: "г. Ростов-на-Дону, Восточная 41, 344065",
+
+      information: "Здравствуйте, дорогие друзья",
+      caseNumber: "34352",
+      numberOfVotes: "1234",
+      amountOfClaims: "1234",
+      creditorsClaims: "2468.00",
+
+      date1: "2020-06-01",
+      time1: "12:30",
+      date2: "2021-06-02",
+      time2: "12:30",
+      date3: "2021-06-03",
+      time3: "12:30",
+      urlMeeting: "https://meets.tender.one/meetings/11",
+
+      question: "Подскажите, пожалуйста, как...."
+    };
+  },
+  created() {
+    // if (!this.loggedIn) {
+    //   this.$router.push("/");
+    // }
+    // this.$socket.$subscribe('show message', (response) => {
+    //   const resp = JSON.parse(response);
+    //   console.log('$subscribe', 'show message', resp);
+    //   this.result = resp.status;
+    //   this.results = resp;
+    //   if (resp.status === 'ok') {
+    //     this.$router.push({ name: 'Home' });
+    //   }
+    // });
+  },
+  mounted() {
+    // if (!this.loggedIn) {
+    //   this.$router.push("/");
+    // }
+  },
+  computed: {
+    // loggedIn() {
+    //   return this.$store.state.auth.status.loggedIn;
+    // }
+  },
+  watch: {
+    step(newStep) {
+      console.log("newstep step");
+      this.schema = schemas[newStep - 1];
+      this.$refs.StepsRef.updateStep();
+      this.$refs.StepsRef.$forceUpdate();
+    }
+  },
+  methods: {
+    onSubmit(values) {
+      formData = {
+        ...formData,
+        ...values
+      };
+
+      if (this.step == 6) {
+        console.log("FINAL!");
+      } else {
+        this.step += 1;
+      }
+
+      console.log("formData", formData);
+    },
+    changeDebtorType(event) {
+      this.debtorType = parseInt(event.target.type.number);
+    }
+  }
+};
+</script>
