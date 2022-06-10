@@ -11,17 +11,17 @@
 }
 
 .link-primary {
-  color: #248bce;
+  color: #0251f8;
 }
 .link-primary:hover, .link-primary:focus {
-  color: #50a2d8;
+  color: #0241c6;
 }
 
 .link-secondary {
-  color: #cc3d5f;
+  color: #d9315e;
 }
 .link-secondary:hover, .link-secondary:focus {
-  color: #a3314c;
+  color: #ae274b;
 }
 
 .link-success {
@@ -32,10 +32,10 @@
 }
 
 .link-info {
-  color: #0dcaf0;
+  color: #0d9bf0;
 }
 .link-info:hover, .link-info:focus {
-  color: #3dd5f3;
+  color: #3daff3;
 }
 
 .link-warning {
@@ -80,6 +80,13 @@
   color: #e5e8eb;
 }
 
+.link-graylighter {
+  color: #e9ecef;
+}
+.link-graylighter:hover, .link-graylighter:focus {
+  color: #edf0f2;
+}
+
 .link-greeny {
   color: #6EC3A9;
 }
@@ -88,10 +95,10 @@
 }
 
 .link-azure {
-  color: #D3E8F5;
+  color: #d9e4fc;
 }
 .link-azure:hover, .link-azure:focus {
-  color: #dcedf7;
+  color: #e1e9fd;
 }
 
 .ratio {
@@ -492,11 +499,11 @@
 }
 
 .border-primary {
-  border-color: #248bce !important;
+  border-color: #0251f8 !important;
 }
 
 .border-secondary {
-  border-color: #cc3d5f !important;
+  border-color: #d9315e !important;
 }
 
 .border-success {
@@ -504,7 +511,7 @@
 }
 
 .border-info {
-  border-color: #0dcaf0 !important;
+  border-color: #0d9bf0 !important;
 }
 
 .border-warning {
@@ -531,12 +538,16 @@
   border-color: #dee2e6 !important;
 }
 
+.border-graylighter {
+  border-color: #e9ecef !important;
+}
+
 .border-greeny {
   border-color: #6EC3A9 !important;
 }
 
 .border-azure {
-  border-color: #D3E8F5 !important;
+  border-color: #d9e4fc !important;
 }
 
 .border-white {
@@ -1266,7 +1277,7 @@
 }
 
 .fw-bolder {
-  font-weight: 900 !important;
+  font-weight: 700 !important;
 }
 
 .lh-1 {
@@ -1378,6 +1389,11 @@
   color: rgba(var(--bs-graylight-rgb), var(--bs-text-opacity)) !important;
 }
 
+.text-graylighter {
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-graylighter-rgb), var(--bs-text-opacity)) !important;
+}
+
 .text-greeny {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-greeny-rgb), var(--bs-text-opacity)) !important;
@@ -1487,6 +1503,11 @@
 .bg-graylight {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-graylight-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-graylighter {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-graylighter-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .bg-greeny {
